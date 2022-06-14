@@ -1,73 +1,75 @@
 #include <bits/stdc++.h>
-
 using namespace std;
+
+#define rep(i, a, b) for (int i = a; i < b; ++i)
+typedef unsigned long long int ull;
 
 void solve()
 {
     int n;
     cin >> n;
 
-    int arr[n];
-    for (int i = 0; i < n; i++)
+    vector<int> arr(n);
+    rep(i, 0, n) cin >> arr[i];
+
+    if (n == 1)
     {
-        cin >> arr[i];
+        cout << 0 << endl;
+        return;
     }
 
-    bool poss = false;
-    int num_can_saved = 0;
-    int num_can = 2;
+    int l = 0;
+    int r = n - 1;
+    int l_sum = 0;
+    int r_sum = 0;
 
-    int left_sum = arr[0];
-    int right_sum = arr[n-1];
+    int ans = -1;
 
-    int i = 1;
-    int j = n-2;
-
-    if (n > 1)
+    while (l <= r)
     {
-        while(i < j)
+        if (l_sum == r_sum)
         {
-            if (left_sum > right_sum)
+            ans = (n - 1 - r) + l;
+
+            if (l != r)
             {
-                right_sum += arr[j];
-                num_can++;
-                j--;
-            }
-            else if (left_sum < right_sum)
-            {
-                left_sum += arr[i];
-                num_can++;
-                i++;
+                l_sum += arr[l];
+                r_sum += arr[r];
+                ++l;
+                --r;
             }
             else
             {
-                num_can_saved = num_can;
-                poss = true;
-
-                right_sum += arr[j];
-                num_can++;
-                j--;
-
-                left_sum += arr[i];
-                num_can++;
-                i++;
+                break;
             }
+        }
+        else if (l_sum < r_sum)
+        {
+            l_sum += arr[l];
+            ++l;
+        }
+        else
+        {
+            r_sum += arr[r];
+            --r;
         }
     }
 
-    if (n > 1 && left_sum == right_sum)
+    if (l_sum == r_sum)
     {
-        num_can_saved = 2;
+        ans = (n - 1 - r) + l;
     }
 
-    cout << num_can_saved << endl;
-
-    
+    cout << ans << endl;
 }
 
 int main()
 {
-    int t;
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+
+    int t = 1;
     cin >> t;
 
     while (t--)

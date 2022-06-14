@@ -6,32 +6,35 @@ typedef unsigned long long int ull;
 
 void solve()
 {
-    int n;
-    cin >> n;
+    ull n, k;
+    cin >> n >> k;
 
-    vector<string> arr(n);
-    rep(i,0,n) {cin >> arr[i];}
-
-    map<string, int> sMap;
+    int num;
+    vector<int> bit_count(31, 0);
     rep(i,0,n)
     {
-        auto it = sMap.find(arr[i]);
-
-        if (it == sMap.end())
+        cin >> num;
+        for (int j = 30; j >= 0; --j)
         {
-            sMap.insert({arr[i], 1});
-        }
-        else
-        {
-            it->second++;
+            bit_count[j] += num%2;
+            num /= 2;
         }
     }
 
     int res = 0;
-    for (auto it = sMap.begin() + 1; it != sMap.end(); ++it)
+    int a = pow(2, 30);
+    rep(i,0,31)
     {
-        if ()
+        if (n - bit_count[i] <= k)
+        {
+            res += a;
+            k -= n-bit_count[i];
+        }
+
+        a /= 2;
     }
+
+    cout << res << endl;
 
 }
 
