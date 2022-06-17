@@ -1,68 +1,146 @@
 #include <bits/stdc++.h>
-
 using namespace std;
+
+#define rep(i, a, b) for (int i = a; i < b; ++i)
+typedef unsigned long long int ull;
 
 void solve()
 {
     int n;
     cin >> n;
 
-    int arr[n];
-    for (int i = 0; i < n; ++i)
+    map<int, int> arr;
+    int x;
+
+    rep(i, 0, n)
     {
-        cin >> arr[i];
-    }
+        cin >> x;
+        auto it = arr.find(x);
 
-    sort(arr, arr+n);
-
-    int pattern[n];
-    pattern[n/2] = arr[n-1];
-
-    int l = n/2 - 1;
-    int r = n/2 + 1;
-    int ind = 2;
-
-    while (n-ind >= 0)
-    {
-        if (l >= 0)
+        if (it == arr.end())
         {
-            pattern[l] = arr[n-ind];
-            ind++;
-            l--;
+            arr.insert({x, 1});
         }
-
-        if (r < n)
+        else if (it->second < 2)
         {
-            pattern[r] = arr[n-ind];
-            ind++;
-            r++;
+            it->second++;
         }
     }
 
-    int start = 1;
-    for (int i = 1; i <= n/2; ++i)
+    vector<int> res;
+    int p = 1; // 1 for back, 0 for front
+    for (auto it = arr.begin(); it != arr.end(); ++it)
     {
-        if (pattern[i] != pattern[i-1])
+        int k = it->first;
+
+        if (it->second == 1)
         {
-            start++;
+            if (p == 1)
+            {
+                res.push_back(k);
+                p = 0;
+            }
+            else
+            {
+                res.insert(res.begin(), k);
+                p = 1;
+            }
+        }
+        else
+        {
+            res.push_back(k);
+            res.insert(res.begin(), k);
         }
     }
 
-    int end = 1;
-    for (int i = n/2+1; i < n; ++i)
+    int left1 = 1;
+    for (int i = 1; i < res.size(); ++i)
     {
-        if (pattern[i] != pattern[i-1])
+        if (res[i] >= res[i - 1])
         {
-            end++;
+            left1 = i;
+            break;
         }
     }
 
-    cout << min(start, end) << endl;
+    int right1 = 1;
+    for (int i = res.size() - 2; i >= 0; --i)
+    {
+        if (res[i] >= res[i + 1])
+        {
+            right1 = res.size() - 1 - i;
+            break;
+        }
+    }
+
+    int m = 1;
+    for (int i = 1; i < res.size(); ++i)
+    {
+        if (res[i] >= res[i - 1])
+        {
+            m = i;
+            int l = 0;
+            int r = i - 1;
+
+            while (l <= r)
+            {
+                int temp = res[l];
+                res[l] = res[r];
+                res[r] = temp;
+
+                ++l;
+                --r;
+            }
+
+            break;
+        }
+    }
+
+    int l = m;
+    int r = res.size() - 1;
+
+    while (l <= r)
+    {
+        int temp = res[l];
+        res[l] = res[r];
+        res[r] = temp;
+
+        ++l;
+        --r;
+    }
+
+    int left2 = 1;
+    for (int i = 1; i < res.size(); ++i)
+    {
+        if (res[i] <= res[i - 1])
+        {
+            left2 = i;
+            break;
+        }
+    }
+
+    int right2 = 1;
+    for (int i = res.size() - 2; i >= 0; --i)
+    {
+        if (res[i] <= res[i + 1])
+        {
+            right2 = res.size() - 1 - i;
+            break;
+        }
+    }
+
+    int ans = max(min(left1, right1), min(left2, right2));
+
+    cout << ans << endl;
 }
 
 int main()
 {
-    int t;
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+
+    int t = 1;
     cin >> t;
 
     while (t--)

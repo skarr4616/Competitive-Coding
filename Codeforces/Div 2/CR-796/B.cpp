@@ -1,108 +1,67 @@
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
 using namespace std;
 
+#define rep(i,a,b) for (int i = a; i < b; ++i)
 typedef unsigned long long int ull;
-
-vector<int> factorize(int n)
-{
-    int num = n;
-    int power = 0;
-
-    while (num%2 == 0)
-    {
-        num = num/2;
-        ++power;
-    }
-
-    return {power, n};
-}
-
-bool comp(vector<int> a, vector<int> b)
-{
-    return a[0] < b[0];
-}
-
-int numDiv(int n)
-{
-    int power = 0;
-
-    while (n%2 == 0)
-    {
-        n = n/2;
-        ++power;
-    }
-
-    return power;
-}
 
 void solve()
 {
     int n;
     cin >> n;
 
-    int arr[n];
-    for (int i = 0; i < n; ++i)
-    {
-        cin >> arr[i];
-    }
-
     vector<int> odd;
     vector<int> even;
-
-    for (int i = 0; i < n; ++i)
+    int x;
+    rep(i,0,n)
     {
-        if (arr[i]%2 == 0)
+        cin >> x;
+
+        if (x%2 == 0)
         {
-            even.push_back(arr[i]);
+            even.push_back(x);
         }
         else
         {
-            odd.push_back(arr[i]);
+            odd.push_back(x);
         }
     }
 
-    int res = 0;
-
-    if (odd.size() != 0)
+    if (odd.size() > 0)
     {
-        res += even.size();
+        cout << even.size() << endl;
+        return;
     }
-    else
+
+    sort(even.begin(), even.end());
+
+    int k = even[0];
+    int ans = even.size() - 1;
+    int min_div = 0;
+
+    while (k%2 != 1)
     {
-        vector<vector<int>> factor;
-
-        for (int i = 0; i < even.size(); ++i)
-        {
-            factor.push_back(factorize(even[i]));
-        }
-
-        sort(factor.begin(), factor.end(), comp);
-
-        int num_odd = 0;
-        int num_even = n;
-
-        int l = 0;
-        int r = n-1;
-
-        while (num_odd < num_even)
-        {
-            res += 1;
-
-            int add = factor[l][1] + factor[r][1];
-            res += numDiv(add);
-
-            ++l;
-            --r;
-
-            num_even -= 2;
-            num_odd += 1;
-        }
-
-        res += num_even;
-
+        min_div++;
+        k /= 2;
     }
 
-    cout << res << endl;
+    for (int i = 1; i < even.size(); ++i)
+    {
+        if (even[i] != even[i-1])
+        {
+            k = even[i];
+            int div = 0;
+
+            while (k%2 != 1)
+            {
+                div++;
+                k /= 2;
+            }
+
+            min_div = min(min_div, div);
+        }
+    }
+
+    cout << ans + min_div << endl;
 }
 
 int main()
@@ -111,7 +70,7 @@ int main()
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int t;
+    int t = 1;
     cin >> t;
 
     while (t--)
